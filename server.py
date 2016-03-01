@@ -2,8 +2,6 @@
 #-*- coding:utf-8 -*-
 
 import os
-import time
-from functools import wraps
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
 from pymongo.errors import AutoReconnect
@@ -23,26 +21,10 @@ else:
 	mongoUrl = "mongodb://{}/{}".format(db_host, db_name)
 
 app = Flask(__name__)
-sysinfo = MongoClient(mongoUrl)[db_name][db_collection]
-
-def reconnect(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        max_retries = 2
-        num_fails = 0
-        while True:
-            try:
-                return func(*args, **kwargs)
-            except AutoReconnect as e:
-                num_fails += 1
-                time.sleep(0.1)
-                if num_fails >= max_retries:
-                    raise e
-    return wrapper
 
 @app.route('/', methods=['POST'])
-@reconnect
 def index():
+	sysinfo = MongoClient(mongoUrl)[db_name][db_collection]
 	info = request.json
 	info['remoteip'] = request.remote_addr
 	object_id = sysinfo.insert(info)
