@@ -30,10 +30,10 @@ def reconnect(func):
     def wrapper(*args, **kwargs):
         max_retries = 2
         num_fails = 0
-        while 1:
+        while True:
             try:
                 return func(*args, **kwargs)
-            except AutoReconnect, e:
+            except AutoReconnect as e:
                 num_fails += 1
                 time.sleep(0.1)
                 if num_fails >= max_retries:
