@@ -1,4 +1,5 @@
 #!/usr/bin/python
+#-*- coding:utf-8 -*-
 
 import os
 import re
@@ -8,8 +9,8 @@ import urllib2
 import datetime
 import flask
 
-url = 'http://localhost:6000'
-label = 'Aspire'
+url = 'http://sysinfo.duapp.com'
+label = os.getenv('LABEL', 'default')
 
 sysinfo = {}
 
@@ -62,5 +63,8 @@ app = flask.Flask(__name__)
 def index():
 	return flask.jsonify(sysinfo)
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+if os.getenv('BAE_ENV_APPID'):
+	from bae.core.wsgi import WSGIApplication
+	application = WSGIApplication(app)
+else:
+	app.run(host='0.0.0.0', port=os.getenv('PORT', 8001))
