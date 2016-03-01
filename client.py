@@ -10,7 +10,7 @@ import datetime
 import flask
 
 url = 'http://sysinfo.duapp.com'
-label = os.getenv('LABEL', 'sae-docker')
+label = os.getenv('LABEL', 'default')
 
 sysinfo = {}
 
