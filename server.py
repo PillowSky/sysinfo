@@ -43,7 +43,9 @@ def reconnect(func):
 @app.route('/', methods=['POST'])
 @reconnect
 def index():
-	object_id = sysinfo.insert(request.json)
+	info = request.json
+	info['remoteip'] = request.remote_addr
+	object_id = sysinfo.insert(info)
 	return str(object_id)
 
 if os.getenv('BAE_ENV_APPID'):
